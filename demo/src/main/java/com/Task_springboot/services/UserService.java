@@ -2,6 +2,7 @@ package com.Task_springboot.services;
 
 import com.Task_springboot.dtos.MensagemDTO;
 import com.Task_springboot.dtos.UserDTO;
+import com.Task_springboot.models.TaskModel;
 import com.Task_springboot.models.UserModel;
 import com.Task_springboot.repositories.TaskRepository;
 import com.Task_springboot.repositories.UserRepository;
@@ -17,12 +18,10 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository repository;
-    private final TaskRepository repositoryCategoria;
     private final TaskRepository taskRepository;
 
-    public UserService(UserRepository repository, TaskRepository repositoryCategoria, TaskRepository taskRepository) {
+    public UserService(UserRepository repository, TaskRepository taskRepository) {
         this.repository = repository;
-        this.repositoryCategoria = repositoryCategoria;
         this.taskRepository = taskRepository;
     }
 
@@ -44,9 +43,7 @@ public class UserService {
         return msg;
 
     }
-
     //Listar Usuários inseridos
-
     public List<UserDTO> obtendoUsuarios(){
 
         List<UserDTO> listaUserDTO = new ArrayList<>();
@@ -63,25 +60,61 @@ public class UserService {
     }
 
     //AtualizarUsários
+    public MensagemDTO alterarUsuario(UserDTO userDto, String email) {
+        MensagemDTO msg = new MensagemDTO();
+        Optional<UserModel> userOp = repository.findByEmail(email);
+
+        if (!userOp.isPresent()) {
+            msg.setMsg("Usuário não existe no banco");
+            return msg;
+        }
+        UserModel user = new UserModel();
+
+        user.setNome(userDto.getNome());
+        user.setEmail(userDto.getEmail());
+        user.setId(userOp.get().getId());
+        repository.save(user);
+
+        msg.setMsg("Usuário alterado com sucesso");
+        return msg;
+    }
 
     //ExcluirUsuários
-   // public MensagemDTO excluir (UserDTO userDados){
-     //   Optional<UserModel> userOP = repository.findByEmail(userDados.getEmail());
-    //    MensagemDTO msg = new MensagemDTO();
+    public MensagemDTO deletaUsuario(String email) {
+        MensagemDTO msg = new MensagemDTO();
 
+        Optional<UserModel> userOP = repository.findByEmail(email);
 
-   //     if (userOP.isEmpty()){
-          //  msg.setMsg("user não encontrado");
-       // return msg;
+        if (!userOP.isPresent()) {
+           msg.setMsg("Usuário não existe!");
+            return msg;
+        }
 
-      //  UserModel userModel = userOP.get();
+        Optional<TaskModel> taskOp = taskRepository.findByUsuario(userOP.get());
+        if (taskOp.isPresent()) {
+            if (taskOp.get().getUsuario().equals(userOP.get())){
+               msg.setMsg("Usuário vinculado em tarefas");
+                return msg;
+            }
+        }
 
-       // if (userModel.get)
+        repository.delete(userOP.get());
+        msg.setMsg("Usuário excluído com sucesso");
+        return msg;
+    }
 
+    public Object obterUsuario ( String email){
+        MensagemDTO msg = new MensagemDTO();
+        Optional<UserModel> userOp = repository.findByEmail(email);
 
-
-
-
-
+        if (!userOp.isPresent()) {
+            msg.setMsg("Usuário não existe no banco");
+            return msg;
+        }
+            UserDTO userDTO = new UserDTO();
+            userDTO.setNome(userOp.get().getNome());
+            userDTO.setEmail(userOp.get().getEmail());
+            return userDTO;
+    }
 
 }

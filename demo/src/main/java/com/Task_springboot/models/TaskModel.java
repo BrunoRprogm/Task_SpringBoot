@@ -9,7 +9,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "Categoria")
+@Table(name = "Tarefas")
 public class TaskModel {
 
     @Id
@@ -30,21 +30,11 @@ public class TaskModel {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    public enum Status{
-        PENDING,
-        IN_PROGRESS,
-        COMPLETED
-    }
-
-
     @ManyToOne //Um para muitos  ManyToMany = muitos para muitos
     private  UserModel usuario;
 
-
     public TaskModel() {
-        this.status = Status.PENDING;
     }
-
 
     public TaskModel(Long id, String titulo, String descricao, LocalDate data, Status status, UserModel usuario) {
         this.id = id;

@@ -1,7 +1,7 @@
 package com.Task_springboot.models;
 
 public enum Status {
-    Pendente,
+    PENDENTE,
     EXECUTANDO,
     CONCLUIDO
 }
