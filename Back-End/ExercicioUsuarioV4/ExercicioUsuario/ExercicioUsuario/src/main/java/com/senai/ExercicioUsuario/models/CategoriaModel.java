@@ -20,7 +20,7 @@ public class    CategoriaModel {
         this.nome = nome;
     }
 
-    public CategoriaModel getId() {
+    public Long getId() {
         return id;
     }
 

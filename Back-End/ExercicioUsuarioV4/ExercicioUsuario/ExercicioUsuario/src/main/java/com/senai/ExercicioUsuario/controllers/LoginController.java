@@ -5,20 +5,19 @@ import com.senai.ExercicioUsuario.dtos.MensagemDto;
 import com.senai.ExercicioUsuario.services.UsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
-@RestController
+@Controller //diferente de restcontroller //Controller fala direto com o navegador - telinha fru fru
 @RequestMapping("/auth")
 public class LoginController {
 
-    private final UsuarioService usuarioService;
+   private final UsuarioService usuarioService;
 
     public LoginController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<MensagemDto> login(@RequestBody LoginDto dados){
@@ -31,4 +30,10 @@ public class LoginController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(mensagem);
     }
 
+   @GetMapping("/login")
+   public String viewLogin(){
+       return "login";
+   }
+
 }
+
